@@ -1,0 +1,63 @@
+
+
+Cycle 1
+  PC              : 0x00000000
+  Instruction     : 0x8C080000
+  Assembly        : lw  $t0, 0($zero)
+  Fields          : opcode=35 rs=0 rt=8 rd=0
+  Immediate       : 0
+  Jump field      : 0x0080000
+  Control signals :
+    RegDst   = 0
+    ALUSrc   = 1
+    MemtoReg = 1
+    RegWrite = 1
+    MemRead  = 1
+    MemWrite = 0
+    Branch   = 0
+    Jump     = 0
+    ALUOp    = 00
+  Register read   : A=0x00000000  B=0x00000000
+  ALU control     : ADD (0010)
+  ALU input B     : 0x00000000
+  ALU result      : 0x00000000
+  Zero            : 1
+  Memory read     : 0x00000000
+  Write reg num   : 8
+  Write-back data : 0x00000000
+  Branch target   : 0x00000004
+  Jump target     : 0x00200000
+  Next PC         : 0x00000004
+
+Cycle 2
+  PC              : 0x00000004
+  Instruction     : 0x8C090004
+  Assembly        : lw  $t1, 4($zero)
+  Fields          : opcode=35 rs=0 rt=9 rd=0
+  Immediate       : 4
+  Jump field      : 0x0090004
+  Control signals :
+    RegDst   = 0
+    ALUSrc   = 1
+    MemtoReg = 1
+    RegWrite = 1
+    MemRead  = 1
+    MemWrite = 0
+    Branch   = 0
+    Jump     = 0
+    ALUOp    = 00
+  Register read   : A=0x00000000  B=0x00000000
+  ALU control     : ADD (0010)
+  ALU input B     : 0x00000004
+  ALU result      : 0x00000004
+  Zero            : 0
+  Memory read     : 0x00000000
+  Write reg num   : 9
+  Write-back data : 0x00000000
+  Branch target   : 0x00000018
+  Jump target     : 0x00240010
+  Next PC         : 0x00000008
+
+......
+	
+	

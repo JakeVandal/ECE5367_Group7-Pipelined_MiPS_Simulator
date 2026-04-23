@@ -1,0 +1,22 @@
+Cycle 1
+  IF : addi $t0, $zero, 1
+  ID : nop
+  EX : nop
+  MEM: nop
+  WB : nop
+  stall=False flush_ifid=False flush_idex=False taken=False
+  forwardA=ID/EX forwardB=ID/EX
+  next_pc=0x00000004
+
+Cycle 2
+  IF : addi $t1, $zero, 2
+  ID : addi $t0, $zero, 1
+  EX : nop
+  MEM: nop
+  WB : nop
+  stall=False flush_ifid=False flush_idex=False taken=False
+  forwardA=ID/EX forwardB=ID/EX
+	next_pc=0x00000008
+
+	......
+	

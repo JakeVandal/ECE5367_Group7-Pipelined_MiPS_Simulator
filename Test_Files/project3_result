@@ -1,0 +1,23 @@
+
+Processed 1 file(s): ['alu_heavy.asm']
+
+Instruction counts:
+lw=1, sw=1, R-type=16, beq=1
+Total instructions: 19
+
+=== Non-pipeline mode ===
+Per-instruction execution time (ps):
+  lw: 800
+  sw: 700
+  R-type: 600
+  beq: 500
+Average CPI: 1.000
+Total execution time: 11600 ps
+Average instruction latency: 610.526 ps
+Average throughput: 1637931034.483 instr/s
+
+=== Pipeline mode ===
+Single-cycle reference clock: 800 ps
+	Pipelined clock: 200 ps
+
+	.......
