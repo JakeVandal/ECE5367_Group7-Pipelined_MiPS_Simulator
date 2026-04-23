@@ -1,4 +1,4 @@
-// FIANL PROJECT
+// FINAL PROJECT
 // Group 7
 // ECE 5367
 // Jake Vandal, Nicholas Lloyd, Kenny Lam, Alejandro Castro, Hind Jaafar, Preston Hsu, Sebastian Padron
@@ -60,6 +60,11 @@ MEM_WB mem_wb;
 int pc = 0;
 int num_instr = 0;
 
+int stall = 0; // Add this!
+
+// Add prototypes or move definitions
+int detect_hazard(Instruction id_instr, Instruction ex_instr, Instruction mem_instr);
+
 // Utility: print instruction
 void print_instr(Instruction instr) {
     switch(instr.op) {
@@ -120,17 +125,15 @@ void EX_stage() {
 void ID_stage() {
     Instruction instr = if_id.instr;
 
-    // Detect hazard with instruction currently in EX stage
-    if (detect_hazard(instr, id_ex.instr)) {
+    // Pass the instruction in EX and the instruction in MEM to check for hazards
+    if (detect_hazard(instr, id_ex.instr, ex_mem.instr)) {
         stall = 1;
-
-        // Insert NOP into EX stage
-        id_ex.instr.op = NOP;
+        // Injecting a NOP into the EX stage is correct
+        id_ex.instr.op = NOP; 
         return;
     }
 
     stall = 0;
-
     id_ex.instr = instr;
     id_ex.rs_val = REG[instr.rs];
     id_ex.rt_val = REG[instr.rt];
@@ -150,25 +153,17 @@ void IF_stage() {
         if_id.instr.op = NOP;
     }
 }
-int detect_hazard(Instruction id_instr, Instruction ex_instr) {
-    // Only care if EX stage writes to a register
-    if (ex_instr.op == ADD || ex_instr.op == SUB) {
-        int ex_dest = ex_instr.rd;
-
-        if (ex_dest != 0 &&
-           (id_instr.rs == ex_dest || id_instr.rt == ex_dest)) {
-            return 1;
-        }
+int detect_hazard(Instruction id_instr, Instruction ex_instr, Instruction mem_instr) {
+    // Check against EX stage
+    if (ex_instr.op == ADD || ex_instr.op == SUB || ex_instr.op == LW) {
+        int dest = (ex_instr.op == LW) ? ex_instr.rt : ex_instr.rd;
+        if (dest != 0 && (id_instr.rs == dest || id_instr.rt == dest)) return 1;
     }
-
-    // Load-use hazard (VERY important)
-    if (ex_instr.op == LW) {
-        int ex_dest = ex_instr.rt;
-
-        if (ex_dest != 0 &&
-           (id_instr.rs == ex_dest || id_instr.rt == ex_dest)) {
-            return 1;
-        }
+    
+    // Check against MEM stage (This was missing!)
+    if (mem_instr.op == ADD || mem_instr.op == SUB || mem_instr.op == LW) {
+        int dest = (mem_instr.op == LW) ? mem_instr.rt : mem_instr.rd;
+        if (dest != 0 && (id_instr.rs == dest || id_instr.rt == dest)) return 1;
     }
 
     return 0;
@@ -177,7 +172,8 @@ int detect_hazard(Instruction id_instr, Instruction ex_instr) {
 // ================= SIMULATION =================
 
 void run_pipeline(int cycles) {
-    for (int i = 0; i < cycles; i++) {
+    int i; // Declare it here
+    for (i = 0; i < cycles; i++) {
         printf("\nCycle %d:\n", i + 1);
 
         WB_stage();
@@ -212,6 +208,7 @@ void load_test_program() {
 // ================= MAIN =================
 
 int main() {
+    int i; // Declare it here
     if_id.instr.op = NOP;
     id_ex.instr.op = NOP;
     ex_mem.instr.op = NOP;
@@ -220,7 +217,7 @@ int main() {
     run_pipeline(10);
 
     printf("\nFinal Register State:\n");
-    for (int i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++) {
         printf("R%d = %d\n", i, REG[i]);
     }
 
